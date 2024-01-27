@@ -36,6 +36,18 @@ app.get('/', (request, response) => {
   response.send('<h1>Hello World!</h1>')
 })
 
+app.get('/api/person/:id', (request, response) => {
+  const id = Number(request.params.id)
+  const person = persons.find(person => person.id === id)
+  
+  if (person) {
+    response.json(person)
+  } else {
+    response.statusMessage = "ID not found";
+    response.status(404).end()
+  }
+})
+
 app.get('/api/persons', (request, response) => {
   response.json(persons)
 })

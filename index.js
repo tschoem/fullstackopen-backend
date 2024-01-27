@@ -36,7 +36,7 @@ app.get('/', (request, response) => {
   response.send('<h1>Hello World!</h1>')
 })
 
-app.get('/api/person/:id', (request, response) => {
+app.get('/api/persons/:id', (request, response) => {
   const id = Number(request.params.id)
   const person = persons.find(person => person.id === id)
   
@@ -46,6 +46,13 @@ app.get('/api/person/:id', (request, response) => {
     response.statusMessage = "ID not found";
     response.status(404).end()
   }
+})
+
+app.delete('/api/persons/:id', (request, response) => {
+  const id = Number(request.params.id)
+  persons = persons.filter(person => person.id !== id)
+
+  response.status(204).end()
 })
 
 app.get('/api/persons', (request, response) => {

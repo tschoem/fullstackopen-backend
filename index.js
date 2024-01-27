@@ -26,6 +26,12 @@ let persons = [
   }
 ]
 
+app.get('/info', (request, response) => {
+  const nowDate = new Date(Date.now())
+  const responseString = `<p>Phonebook has info for ${persons.length} people<p><p>${nowDate.toString()}</p>`
+  response.send(responseString)
+})
+
 app.get('/', (request, response) => {
   response.send('<h1>Hello World!</h1>')
 })

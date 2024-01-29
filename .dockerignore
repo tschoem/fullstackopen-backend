@@ -1,0 +1,12 @@
+/.git
+/node_modules
+.dockerignore
+.env
+Dockerfile
+fly.toml
+/.git
+/node_modules
+.dockerignore
+.env
+Dockerfile
+fly.toml

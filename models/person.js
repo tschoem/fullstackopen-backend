@@ -1,5 +1,5 @@
 const mongoose = require('mongoose')
-const uniqueValidator = require('mongoose-unique-validator');
+const uniqueValidator = require('mongoose-unique-validator')
 
 mongoose.set('strictQuery', false)
 
@@ -8,7 +8,7 @@ const url = process.env.MONGODB_URI
 //console.log('connecting to', url)
 
 mongoose.connect(url)
-  .then(result => {
+  .then(() => {
     console.log('connected to MongoDB')
   })
   .catch((error) => {
@@ -21,7 +21,7 @@ const personSchema = new mongoose.Schema({
     type: String,
     validate: {
       validator: function(v) {
-        return /(?=.{8,}$)\d{2,3}-\d{4,}/.test(v);
+        return /(?=.{8,}$)\d{2,3}-\d{4,}/.test(v)
       },
       message: props => `${props.value} is not a valid phone number!`
     },
@@ -29,7 +29,7 @@ const personSchema = new mongoose.Schema({
   },
 })
 
-personSchema.plugin(uniqueValidator);
+personSchema.plugin(uniqueValidator)
 
 personSchema.set('toJSON', {
   transform: (document, returnedObject) => {

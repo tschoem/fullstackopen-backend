@@ -14,7 +14,7 @@ const unknownEndpoint = (request, response) => {
 app.use(express.static('dist'))
 app.use(express.json())
 
-morgan.token('body', function (req, res) { return JSON.stringify(req.body) })
+morgan.token('body', function (req) { return JSON.stringify(req.body) })
 
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
 
@@ -48,9 +48,9 @@ app.delete('/api/persons/:id', (request, response, next) => {
     .then(result => {
       if (result) {
         response.json(result)
-       } else {
+      } else {
         response.status(204).end()
-       }
+      }
     })
     .catch(error => next(error))
 })
@@ -117,15 +117,15 @@ const errorHandler = (error, request, response, next) => {
 
   if (error.name === 'CastError') {
     return response.status(400).send({ error: 'malformatted id' })
-  } 
-  
+  }
+
   if (error.name === 'ValidationError') {
     return response.status(400).send({ error: error.message })
-  } 
+  }
 
   if (error.name === 'MongoServerError') {
     return response.status(400).send({ error: 'duplicate key (name)' })
-  } 
+  }
 
   next(error)
 }

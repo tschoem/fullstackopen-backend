@@ -1,7 +1,9 @@
+require('dotenv').config()
 const express = require('express')
 const morgan = require('morgan')
 const app = express()
 const cors = require('cors')
+const Person = require('./models/person')
 
 app.use(cors())
 
@@ -113,7 +115,9 @@ app.post('/api/persons', (request, response) => {
 })
 
 app.get('/api/persons', (request, response) => {
-  response.json(persons)
+  Person.find({}).then(notes => {
+    response.json(notes)
+  })
 })
 
 app.use(unknownEndpoint)

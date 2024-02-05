@@ -75,17 +75,7 @@ app.delete('/api/persons/:id', (request, response, next) => {
     .catch(error => next(error))
 })
 
-const generateId = () => {
-  var randomID
-
-  do {
-    randomID = Math.floor(Math.random() * 1000000000000)
-  } while (persons.find(person => person.id === randomID))
-
-  return randomID
-}
-
-app.post('/api/persons', (request, response) => {
+app.post('/api/persons', (request, response, next) => {
   const body = request.body
 
   if (!body.name) {
@@ -100,20 +90,16 @@ app.post('/api/persons', (request, response) => {
     })
   }
 
-  if (persons.find(person => person.name === body.name)) {
-    return response.status(400).json({
-      error: 'Name must be unique'
-    })
-  }
-
   const person = new Person({
     name: body.name,
     number: body.number
   })
 
-  person.save().then(savedPerson => {
-    response.json(savedPerson)
-  })
+  person.save()
+    .then(savedPerson => {
+      response.json(savedPerson)
+    })
+    .catch(error => next(error))
 
 })
 
@@ -121,6 +107,21 @@ app.get('/api/persons', (request, response) => {
   Person.find({}).then(notes => {
     response.json(notes)
   })
+})
+
+app.put('/api/persons/:id', (request, response, next) => {
+  const body = request.body
+
+  const person = {
+    name: body.name,
+    number: body.number,
+  }
+
+  Person.findByIdAndUpdate(request.params.id, person, { new: true })
+    .then(updatedPerson => {
+      response.json(updatedPerson)
+    })
+    .catch(error => next(error))
 })
 
 app.use(unknownEndpoint)
@@ -131,10 +132,19 @@ app.listen(PORT, () => {
 })
 
 const errorHandler = (error, request, response, next) => {
+  //console.log(error.name)
   console.error(error.message)
 
   if (error.name === 'CastError') {
     return response.status(400).send({ error: 'malformatted id' })
+  } 
+  
+  if (error.name === 'ValidationError') {
+    return response.status(400).send({ error: 'expected name to be unique' })
+  } 
+
+  if (error.name === 'MongoServerError') {
+    return response.status(400).send({ error: 'duplicate key (name)' })
   } 
 
   next(error)

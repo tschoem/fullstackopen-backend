@@ -1,0 +1,7 @@
+PUT http://localhost:3001/api/persons/65c15aceffe5f0fdb0a2dd7c HTTP/1.1
+content-type: application/json
+
+{
+    "name": "Thomas Du Cordonnier 3",
+    "number": "9999-8888"
+}

@@ -63,7 +63,7 @@ app.get('/api/persons/:id', (request, response) => {
   }
 })
 
-app.delete('/api/persons/:id', (request, response) => {
+app.delete('/api/persons/:id', (request, response, next) => {
   Person.findByIdAndDelete(request.params.id)
     .then(result => {
       if (result) {
@@ -72,10 +72,7 @@ app.delete('/api/persons/:id', (request, response) => {
         response.status(204).end()
        }
     })
-    .catch(error => {
-      console.log(error)
-      response.status(400).send({ error: 'malformatted id' })
-    })
+    .catch(error => next(error))
 })
 
 const generateId = () => {
@@ -132,3 +129,16 @@ const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })
+
+const errorHandler = (error, request, response, next) => {
+  console.error(error.message)
+
+  if (error.name === 'CastError') {
+    return response.status(400).send({ error: 'malformatted id' })
+  } 
+
+  next(error)
+}
+
+// this has to be the last loaded middleware.
+app.use(errorHandler)

@@ -102,16 +102,15 @@ app.post('/api/persons', (request, response) => {
     })
   }
 
-  const person = {
+  const person = new Person({
     name: body.name,
-    number: body.number,
-    id: generateId(),
-  }
+    number: body.number
+  })
 
-  persons = persons.concat(person)
+  person.save().then(savedPerson => {
+    response.json(savedPerson)
+  })
 
-  response.json(person)
-  
 })
 
 app.get('/api/persons', (request, response) => {
